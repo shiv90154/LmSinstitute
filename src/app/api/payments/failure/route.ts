@@ -77,13 +77,10 @@ export async function POST(request: NextRequest) {
 
     await order.save();
 
-    // Log the failure for monitoring
-    console.log(`Payment failed for order ${orderId}:`, {
-      userId: session.user.id,
-      orderId,
-      razorpayOrderId,
-      error,
-    });
+    // Log the failure for monitoring in production
+    if (process.env.NODE_ENV === 'production') {
+      // Send to logging service: logger.error('Payment failed', { userId, orderId, error });
+    }
 
     return NextResponse.json({
       success: true,

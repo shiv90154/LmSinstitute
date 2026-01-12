@@ -13,7 +13,10 @@ export default function PerformanceMonitorComponent({ children }: PerformanceMon
             // Monitor Core Web Vitals if available
             import('web-vitals').then(({ onCLS, onINP, onFCP, onLCP, onTTFB }) => {
                 const reportWebVital = (metric: any) => {
-                    console.log('Web Vital:', metric.name, metric.value);
+                    // Send to analytics service in production
+                    if (process.env.NODE_ENV === 'production') {
+                        // analytics.track('web-vital', { name: metric.name, value: metric.value });
+                    }
                 };
 
                 onCLS(reportWebVital);

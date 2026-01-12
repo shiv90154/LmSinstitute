@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
         break;
       
       default:
-        console.log(`Unhandled webhook event: ${eventType}`);
+        // Unhandled webhook event - log for monitoring if needed
     }
 
     return NextResponse.json({ success: true });
@@ -152,14 +152,14 @@ async function handlePaymentCaptured(payment: any) {
           });
 
           await invoiceDoc.save();
-          console.log(`Invoice generated for order: ${order._id}, Invoice: ${invoice.invoiceNumber}`);
+          // Invoice generated successfully
 
         } catch (invoiceError) {
           console.error('Error generating invoice in webhook:', invoiceError);
         }
       }
 
-      console.log(`Payment captured and processed for order: ${order._id}`);
+      // Payment captured and processed successfully
     }
   } catch (error) {
     console.error('Error handling payment captured:', error);
@@ -182,7 +182,7 @@ async function handlePaymentFailed(payment: any) {
       };
 
       await order.save();
-      console.log(`Payment failed for order: ${order._id}`);
+      // Payment failed - order updated
     }
   } catch (error) {
     console.error('Error handling payment failed:', error);
@@ -204,7 +204,7 @@ async function handleOrderPaid(orderData: any) {
       };
 
       await order.save();
-      console.log(`Order paid: ${order._id}`);
+      // Order marked as paid
     }
   } catch (error) {
     console.error('Error handling order paid:', error);

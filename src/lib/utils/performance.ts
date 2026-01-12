@@ -210,7 +210,7 @@ export const registerServiceWorker = async () => {
   
   try {
     const registration = await navigator.serviceWorker.register('/sw.js');
-    console.log('Service Worker registered:', registration);
+    // Service Worker registered successfully
   } catch (error) {
     console.error('Service Worker registration failed:', error);
   }
@@ -223,8 +223,8 @@ export const reportWebVitals = (metric: any) => {
   
   // Send to analytics in production
   if (process.env.NODE_ENV === 'production') {
-    // Example: send to Google Analytics or other service
-    console.log('Web Vital:', metric);
+    // Send to analytics service in production
+    // Example: analytics.track('web-vital', metric);
   }
 };
 

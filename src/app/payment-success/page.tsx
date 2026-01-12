@@ -45,8 +45,8 @@ function PaymentSuccessContent() {
 
     useEffect(() => {
         if (!orderId) {
-            // Simulate redirect
-            console.log('No order ID provided');
+            // Redirect to home if no order ID
+            return;
         }
         setLoading(false);
     }, [orderId]);

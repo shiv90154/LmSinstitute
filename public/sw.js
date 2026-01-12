@@ -39,12 +39,12 @@ const API_CACHE_PATTERNS = {
 
 // Install event - cache static assets
 self.addEventListener('install', (event) => {
-    console.log('Service Worker installing...');
+    // Service Worker installing
 
     event.waitUntil(
         caches.open(STATIC_CACHE)
             .then((cache) => {
-                console.log('Caching static assets');
+                // Caching static assets
                 return cache.addAll(STATIC_ASSETS);
             })
             .then(() => {
@@ -55,7 +55,7 @@ self.addEventListener('install', (event) => {
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
-    console.log('Service Worker activating...');
+    // Service Worker activating
 
     event.waitUntil(
         caches.keys()
@@ -63,7 +63,7 @@ self.addEventListener('activate', (event) => {
                 return Promise.all(
                     cacheNames.map((cacheName) => {
                         if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
-                            console.log('Deleting old cache:', cacheName);
+                            // Deleting old cache
                             return caches.delete(cacheName);
                         }
                     })

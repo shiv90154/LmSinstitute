@@ -138,10 +138,8 @@ export function withApiMiddleware(
       context.startTime = startTime;
 
       // Log access if enabled
-      if (options.logAccess) {
-        console.log('API Access:', {
-          timestamp: new Date().toISOString(),
-          method: request.method,
+      if (options.logAccess && process.env.NODE_ENV === 'production') {
+        // Send to logging service: logger.info('API Access', { ... });
           url: request.url,
           userId: session?.user?.id || 'anonymous',
           userRole: session?.user?.role || 'none',

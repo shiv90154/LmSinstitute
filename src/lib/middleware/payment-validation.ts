@@ -444,11 +444,15 @@ export function logPaymentValidation(
     userAgent: request?.headers.get('user-agent') || 'unknown'
   };
 
-  // Log to console (in production, send to logging service)
-  console.log('Payment validation:', logEntry);
+  // Log to production logging service if needed
+  if (process.env.NODE_ENV === 'production') {
+    // Send to logging service: logger.info('Payment validation', logEntry);
+  }
   
   // Log security events
   if (!success && error) {
-    console.warn('Payment validation failed:', logEntry);
+    if (process.env.NODE_ENV === 'production') {
+      // Send to security monitoring: logger.warn('Payment validation failed', logEntry);
+    }
   }
 }

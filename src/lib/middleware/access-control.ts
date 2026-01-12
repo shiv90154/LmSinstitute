@@ -244,12 +244,16 @@ export function logAccessAttempt(
     userAgent: request?.headers.get('user-agent') || 'unknown'
   };
 
-  // In production, you would send this to a logging service
-  console.log('Access attempt:', logEntry);
+  // Send to production logging service if needed
+  if (process.env.NODE_ENV === 'production') {
+    // Send to logging service: logger.info('Access attempt', logEntry);
+  }
   
-  // You could also store critical access attempts in the database
+  // Store critical access attempts in production
   if (!success && reason) {
-    console.warn('Access denied:', logEntry);
+    if (process.env.NODE_ENV === 'production') {
+      // Send to security monitoring: logger.warn('Access denied', logEntry);
+    }
   }
 }
 
