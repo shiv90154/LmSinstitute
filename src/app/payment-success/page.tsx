@@ -52,7 +52,7 @@ function PaymentSuccessContent() {
     }, [orderId]);
 
     const handleDownloadInvoice = async () => {
-        console.log('Download invoice functionality will be implemented');
+        // Download invoice functionality will be implemented
     };
 
     if (loading) {
