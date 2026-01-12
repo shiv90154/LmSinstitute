@@ -139,13 +139,15 @@ export function withApiMiddleware(
 
       // Log access if enabled
       if (options.logAccess && process.env.NODE_ENV === 'production') {
-        // Send to logging service: logger.info('API Access', { ... });
-          url: request.url,
-          userId: session?.user?.id || 'anonymous',
-          userRole: session?.user?.role || 'none',
-          ip: clientIP,
-          userAgent: request.headers.get('user-agent') || 'unknown'
-        });
+        // Send to logging service: logger.info('API Access', {
+        //   timestamp: new Date().toISOString(),
+        //   method: request.method,
+        //   url: request.url,
+        //   userId: session?.user?.id || 'anonymous',
+        //   userRole: session?.user?.role || 'none',
+        //   ip: clientIP,
+        //   userAgent: request.headers.get('user-agent') || 'unknown'
+        // });
       }
 
       // Execute the handler
