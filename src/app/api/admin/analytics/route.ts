@@ -5,7 +5,6 @@ import connectDB from '@/lib/db/mongodb';
 import User from '@/models/User';
 import Course from '@/models/Course';
 import Order from '@/models/Order';
-import { MockTest } from '@/models/MockTest';
 
 export const dynamic = 'force-dynamic';
 
