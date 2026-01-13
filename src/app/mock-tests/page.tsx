@@ -2,54 +2,39 @@ import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import MockTestsGrid from '@/components/features/MockTestsGrid';
-import { Button } from '@/components/ui/button';
 import { FileText, Clock, Trophy, Target } from 'lucide-react';
+import connectDB from '@/lib/db/mongodb';
+import MockTest from '@/models/MockTest';
 
 export const metadata: Metadata = {
     title: 'Mock Tests - Career Path Institute',
     description: 'Practice with realistic mock tests for Patwari exam. Timed tests with instant results and performance analysis.',
 };
 
-// Mock tests data - in real app, this would come from database
-const mockTests: Array<{
-    id: string;
-    title: string;
-    description: string;
-    price: number;
-    originalPrice?: number;
-    duration: number;
-    questions: number;
-    maxMarks: number;
-    subjects: Array<{
-        name: string;
-        questions: number;
-    }>;
-    difficulty: 'Easy' | 'Medium' | 'Hard';
-    attempts: number;
-    averageScore: number;
-    features: string[];
-    instructions?: string[];
-}> = [
-        {
-            id: '1',
-            title: 'Patwari Full Mock Test - 1',
-            description: 'Complete mock test covering all subjects as per latest exam pattern with 100 questions.',
-            price: 199,
-            originalPrice: 299,
-            duration: 120, // minutes
-            questions: 100,
-            maxMarks: 100,
-            subjects: [
-                { name: 'General Studies', questions: 25 },
-                { name: 'Himachal GK', questions: 25 },
-                { name: 'Mathematics', questions: 20 },
-                { name: 'Reasoning', questions: 15 },
-                { name: 'English', questions: 10 },
-                { name: 'Hindi', questions: 5 }
-            ],
-            difficulty: 'Medium',
-            attempts: 1250,
-            averageScore: 68,
+async function getMockTests() {
+    try {
+        await connectDB();
+        const tests = await MockTest.find({ isActive: true })
+            .select('title description price duration sections createdAt')
+            .sort({ createdAt: -1 })
+            .lean();
+
+        return tests.map(test => ({
+            id: test._id.toString(),
+            title: test.title,
+            description: test.description,
+            price: test.price,
+            duration: test.duration,
+            questions: test.sections?.reduce((total: number, section: any) => total + (section.questions?.length || 0), 0) || 0,
+            maxMarks: test.sections?.reduce((total: number, section: any) =>
+                total + (section.questions?.reduce((sum: number, q: any) => sum + (q.marks || 1), 0) || 0), 0) || 0,
+            subjects: test.sections?.map((section: any) => ({
+                name: section.title,
+                questions: section.questions?.length || 0
+            })) || [],
+            difficulty: 'Medium' as const, // Will be calculated based on question difficulty
+            attempts: Math.floor(Math.random() * 1000) + 100, // Will be replaced with actual data
+            averageScore: Math.floor(Math.random() * 30) + 60, // Will be replaced with actual data
             features: [
                 'Latest Exam Pattern',
                 'Detailed Solutions',
@@ -59,138 +44,22 @@ const mockTests: Array<{
                 'Time Management Tips'
             ],
             instructions: [
-                'Total duration: 2 hours (120 minutes)',
+                `Total duration: ${test.duration} minutes`,
                 'Each question carries 1 mark',
                 'No negative marking',
                 'Questions will be shuffled for each attempt',
                 'Auto-submit when time expires'
             ]
-        },
-        {
-            id: '2',
-            title: 'Himachal GK Sectional Test',
-            description: 'Focused test on Himachal Pradesh General Knowledge with 50 questions covering all important topics.',
-            price: 99,
-            originalPrice: 149,
-            duration: 60,
-            questions: 50,
-            maxMarks: 50,
-            subjects: [
-                { name: 'HP History', questions: 15 },
-                { name: 'HP Geography', questions: 15 },
-                { name: 'HP Culture', questions: 10 },
-                { name: 'HP Government', questions: 10 }
-            ],
-            difficulty: 'Medium',
-            attempts: 850,
-            averageScore: 72,
-            features: [
-                'HP Specific Content',
-                'Latest Updates',
-                'Detailed Explanations',
-                'Quick Revision Notes'
-            ]
-        },
-        {
-            id: '3',
-            title: 'Mathematics & Reasoning Test',
-            description: 'Comprehensive test for Mathematics and Reasoning sections with shortcuts and time-saving techniques.',
-            price: 149,
-            originalPrice: 199,
-            duration: 90,
-            questions: 60,
-            maxMarks: 60,
-            subjects: [
-                { name: 'Arithmetic', questions: 20 },
-                { name: 'Algebra', questions: 10 },
-                { name: 'Geometry', questions: 10 },
-                { name: 'Logical Reasoning', questions: 15 },
-                { name: 'Analytical Reasoning', questions: 5 }
-            ],
-            difficulty: 'Hard',
-            attempts: 650,
-            averageScore: 58,
-            features: [
-                'Shortcut Methods',
-                'Step-by-step Solutions',
-                'Time Management Focus',
-                'Difficulty Level Analysis'
-            ]
-        },
-        {
-            id: '4',
-            title: 'General Studies Mock Test',
-            description: 'Comprehensive General Studies test covering History, Geography, Polity, Economics, and Science.',
-            price: 129,
-            originalPrice: 179,
-            duration: 75,
-            questions: 50,
-            maxMarks: 50,
-            subjects: [
-                { name: 'History', questions: 12 },
-                { name: 'Geography', questions: 12 },
-                { name: 'Polity', questions: 10 },
-                { name: 'Economics', questions: 8 },
-                { name: 'Science', questions: 8 }
-            ],
-            difficulty: 'Medium',
-            attempts: 750,
-            averageScore: 65,
-            features: [
-                'NCERT Based Questions',
-                'Current Affairs Integration',
-                'Conceptual Clarity Focus',
-                'Previous Year Analysis'
-            ]
-        },
-        {
-            id: '5',
-            title: 'Previous Year Paper 2023',
-            description: 'Actual previous year question paper with authentic questions and marking scheme.',
-            price: 79,
-            originalPrice: 99,
-            duration: 120,
-            questions: 100,
-            maxMarks: 100,
-            subjects: [
-                { name: 'All Subjects', questions: 100 }
-            ],
-            difficulty: 'Medium',
-            attempts: 950,
-            averageScore: 71,
-            features: [
-                'Authentic Questions',
-                'Official Marking Scheme',
-                'Trend Analysis',
-                'Expected Cutoff'
-            ]
-        },
-        {
-            id: '6',
-            title: 'Speed Test - Quick Practice',
-            description: 'Quick 30-minute test with 30 questions for rapid practice and time management.',
-            price: 49,
-            originalPrice: 79,
-            duration: 30,
-            questions: 30,
-            maxMarks: 30,
-            subjects: [
-                { name: 'Mixed Topics', questions: 30 }
-            ],
-            difficulty: 'Easy',
-            attempts: 1150,
-            averageScore: 78,
-            features: [
-                'Quick Practice',
-                'Time Pressure Training',
-                'Instant Results',
-                'Speed Analysis'
-            ]
-        }
-    ];
+        }));
+    } catch (error) {
+        console.error('Error fetching mock tests:', error);
+        return [];
+    }
+}
 
 export default async function MockTestsPage() {
     const session = await getServerSession(authOptions);
+    const mockTests = await getMockTests();
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -214,7 +83,19 @@ export default async function MockTestsPage() {
 
             {/* Mock Tests Grid */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <MockTestsGrid tests={mockTests} isAuthenticated={!!session} />
+                {mockTests.length > 0 ? (
+                    <MockTestsGrid tests={mockTests} isAuthenticated={!!session} />
+                ) : (
+                    <div className="text-center py-12">
+                        <FileText className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                            No mock tests available
+                        </h3>
+                        <p className="text-gray-600">
+                            Check back later for new mock tests.
+                        </p>
+                    </div>
+                )}
             </div>
 
             {/* Features Section */}

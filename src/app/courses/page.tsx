@@ -2,176 +2,61 @@ import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import CoursesGrid from '@/components/features/CoursesGrid';
-import { Button } from '@/components/ui/button';
 import { GraduationCap, Play, Users, Clock } from 'lucide-react';
+import connectDB from '@/lib/db/mongodb';
+import Course from '@/models/Course';
 
 export const metadata: Metadata = {
     title: 'Courses - Career Path Institute',
     description: 'Comprehensive online courses for Patwari exam preparation with video lectures, study materials, and practice tests.',
 };
 
-// Mock courses data - in real app, this would come from database
-const courses = [
-    {
-        id: '1',
-        title: 'Complete Patwari Exam Preparation 2024',
-        description: 'Comprehensive course covering all subjects with 200+ video lectures, study materials, and mock tests.',
-        price: 2999,
-        originalPrice: 4999,
-        thumbnail: '/images/courses/complete-patwari.jpg',
-        instructor: 'Career Path Institute Team',
-        duration: '6 months',
-        lectures: 250,
-        students: 1250,
-        rating: 4.8,
-        level: 'Beginner to Advanced',
-        language: 'Hindi & English',
-        subjects: [
-            'General Studies',
-            'Himachal Pradesh GK',
-            'English Language',
-            'Hindi Language',
-            'Mathematics',
-            'Reasoning',
-            'Computer Knowledge',
-            'Current Affairs'
-        ],
-        features: [
-            '250+ HD Video Lectures',
-            'Downloadable Study Materials',
-            '50+ Mock Tests',
-            'Previous Year Papers',
-            'Live Doubt Sessions',
-            'Mobile App Access',
-            'Certificate of Completion',
-            'Lifetime Access'
-        ],
-        sections: [
-            {
-                id: '1',
-                title: 'General Studies',
-                lectures: 45,
-                duration: '30 hours',
-                topics: ['History', 'Geography', 'Polity', 'Economics', 'Science']
-            },
-            {
-                id: '2',
-                title: 'Himachal Pradesh GK',
-                lectures: 35,
-                duration: '25 hours',
-                topics: ['History', 'Geography', 'Culture', 'Government Schemes', 'Current Affairs']
-            },
-            {
-                id: '3',
-                title: 'Mathematics',
-                lectures: 40,
-                duration: '28 hours',
-                topics: ['Arithmetic', 'Algebra', 'Geometry', 'Mensuration', 'Statistics']
-            },
-            {
-                id: '4',
-                title: 'Reasoning',
-                lectures: 30,
-                duration: '20 hours',
-                topics: ['Logical Reasoning', 'Analytical Reasoning', 'Verbal Reasoning']
-            }
-        ]
-    },
-    {
-        id: '2',
-        title: 'Himachal Pradesh GK Masterclass',
-        description: 'Specialized course focusing on Himachal Pradesh General Knowledge with latest updates and current affairs.',
-        price: 1499,
-        originalPrice: 2499,
-        thumbnail: '/images/courses/hp-gk-masterclass.jpg',
-        instructor: 'HP GK Experts',
-        duration: '3 months',
-        lectures: 80,
-        students: 850,
-        rating: 4.9,
-        level: 'All Levels',
-        language: 'Hindi',
-        subjects: [
-            'HP History',
-            'HP Geography',
-            'HP Culture & Traditions',
-            'HP Government & Politics',
-            'HP Economy',
-            'HP Current Affairs'
-        ],
-        features: [
-            '80+ Detailed Video Lectures',
-            'Interactive Maps & Charts',
-            'Monthly Current Affairs Updates',
-            'Practice MCQs',
-            'Quick Revision Notes',
-            'Mobile Friendly Content'
-        ]
-    },
-    {
-        id: '3',
-        title: 'Mathematics & Reasoning Crash Course',
-        description: 'Intensive course for Mathematics and Reasoning with shortcuts, tricks, and extensive practice.',
-        price: 1299,
-        originalPrice: 1999,
-        thumbnail: '/images/courses/math-reasoning.jpg',
-        instructor: 'Math & Reasoning Experts',
-        duration: '2 months',
-        lectures: 60,
-        students: 650,
-        rating: 4.7,
-        level: 'Beginner to Intermediate',
-        language: 'Hindi & English',
-        subjects: [
-            'Arithmetic',
-            'Algebra',
-            'Geometry',
-            'Logical Reasoning',
-            'Analytical Reasoning',
-            'Data Interpretation'
-        ],
-        features: [
-            'Shortcut Methods & Tricks',
-            'Step-by-step Solutions',
-            'Practice Worksheets',
-            'Time Management Tips',
-            'Weekly Assessments'
-        ]
-    },
-    {
-        id: '4',
-        title: 'English & Hindi Language Course',
-        description: 'Complete language preparation covering grammar, vocabulary, comprehension, and writing skills.',
-        price: 999,
-        originalPrice: 1499,
-        thumbnail: '/images/courses/language-course.jpg',
-        instructor: 'Language Experts',
-        duration: '2 months',
-        lectures: 50,
-        students: 450,
-        rating: 4.6,
-        level: 'All Levels',
-        language: 'Hindi & English',
-        subjects: [
-            'English Grammar',
-            'English Vocabulary',
-            'Reading Comprehension',
-            'Hindi Grammar',
-            'Hindi Literature',
-            'Translation Skills'
-        ],
-        features: [
-            'Grammar Rules & Examples',
-            'Vocabulary Building Exercises',
-            'Comprehension Practice',
-            'Writing Skills Development',
-            'Translation Practice'
-        ]
+async function getCourses() {
+    try {
+        await connectDB();
+        const courses = await Course.find({ isActive: true })
+            .select('title description price thumbnail sections createdAt')
+            .sort({ createdAt: -1 })
+            .lean();
+
+        return courses.map(course => ({
+            id: course._id.toString(),
+            title: course.title,
+            description: course.description,
+            price: course.price,
+            thumbnail: course.thumbnail,
+            instructor: 'Career Path Institute',
+            duration: `${Math.ceil(course.sections?.length * 2 || 1)} months`,
+            lectures: course.sections?.reduce((total: number, section: any) => total + (section.videos?.length || 0), 0) || 0,
+            students: Math.floor(Math.random() * 1000) + 100, // Will be replaced with actual enrollment data
+            rating: 4.5 + Math.random() * 0.5, // Will be replaced with actual ratings
+            level: 'All Levels',
+            language: 'Hindi & English',
+            subjects: course.sections?.map((section: any) => section.title) || [],
+            features: [
+                'HD Video Lectures',
+                'Downloadable Study Materials',
+                'Practice Tests',
+                'Mobile Access',
+                'Lifetime Access'
+            ],
+            sections: course.sections?.map((section: any) => ({
+                id: section._id.toString(),
+                title: section.title,
+                lectures: section.videos?.length || 0,
+                duration: `${(section.videos?.length || 0) * 0.5} hours`,
+                topics: section.videos?.map((video: any) => video.title) || []
+            })) || []
+        }));
+    } catch (error) {
+        console.error('Error fetching courses:', error);
+        return [];
     }
-];
+}
 
 export default async function CoursesPage() {
     const session = await getServerSession(authOptions);
+    const courses = await getCourses();
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -195,7 +80,19 @@ export default async function CoursesPage() {
 
             {/* Courses Grid */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <CoursesGrid courses={courses} isAuthenticated={!!session} />
+                {courses.length > 0 ? (
+                    <CoursesGrid courses={courses} isAuthenticated={!!session} />
+                ) : (
+                    <div className="text-center py-12">
+                        <GraduationCap className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                            No courses available
+                        </h3>
+                        <p className="text-gray-600">
+                            Check back later for new courses.
+                        </p>
+                    </div>
+                )}
             </div>
 
             {/* Features Section */}

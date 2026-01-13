@@ -2,92 +2,45 @@ import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import BooksGrid from '@/components/features/BooksGrid';
-import { Button } from '@/components/ui/button';
 import { BookOpen, ShoppingCart } from 'lucide-react';
+import connectDB from '@/lib/db/mongodb';
+import Book from '@/models/Book';
 
 export const metadata: Metadata = {
     title: 'Books - Career Path Institute',
     description: 'Browse and purchase comprehensive study books for Patwari exam preparation.',
 };
 
-// Mock books data - in real app, this would come from database
-const books = [
-    {
-        id: '1',
-        title: 'Complete Patwari Exam Guide 2024',
-        description: 'Comprehensive guide covering all subjects for Patwari exam with practice questions and mock tests.',
-        price: 599,
-        originalPrice: 799,
-        thumbnail: '/images/books/patwari-guide.jpg',
-        author: 'Career Path Institute',
-        pages: 850,
-        language: 'Hindi & English',
-        subjects: ['General Studies', 'Himachal GK', 'Mathematics', 'Reasoning'],
-        features: [
-            '2000+ Practice Questions',
-            'Previous Year Papers',
-            'Detailed Solutions',
-            'Subject-wise Coverage'
-        ]
-    },
-    {
-        id: '2',
-        title: 'Himachal Pradesh General Knowledge',
-        description: 'Complete coverage of Himachal Pradesh history, geography, culture, and current affairs.',
-        price: 399,
-        originalPrice: 499,
-        thumbnail: '/images/books/hp-gk.jpg',
-        author: 'HP Experts Team',
-        pages: 650,
-        language: 'Hindi',
-        subjects: ['Himachal GK', 'History', 'Geography', 'Culture'],
-        features: [
-            'Latest Updates',
-            'Maps & Diagrams',
-            'Quick Revision Notes',
-            'Practice MCQs'
-        ]
-    },
-    {
-        id: '3',
-        title: 'Mathematics & Reasoning for Patwari',
-        description: 'Focused preparation material for Mathematics and Reasoning sections with shortcuts and tricks.',
-        price: 449,
-        originalPrice: 599,
-        thumbnail: '/images/books/math-reasoning.jpg',
-        author: 'Math Experts',
-        pages: 550,
-        language: 'Hindi & English',
-        subjects: ['Mathematics', 'Reasoning', 'Quantitative Aptitude'],
-        features: [
-            'Shortcut Methods',
-            'Step-by-step Solutions',
-            'Practice Sets',
-            'Time-saving Tricks'
-        ]
-    },
-    {
-        id: '4',
-        title: 'English & Hindi Language Guide',
-        description: 'Complete language preparation covering grammar, vocabulary, and comprehension.',
-        price: 349,
-        originalPrice: 449,
-        thumbnail: '/images/books/language-guide.jpg',
-        author: 'Language Experts',
-        pages: 450,
-        language: 'Hindi & English',
-        subjects: ['English', 'Hindi', 'Grammar', 'Vocabulary'],
-        features: [
-            'Grammar Rules',
-            'Vocabulary Building',
-            'Comprehension Practice',
-            'Translation Exercises'
-        ]
+async function getBooks() {
+    try {
+        await connectDB();
+        const books = await Book.find({ isActive: true })
+            .select('title description price originalPrice thumbnail author pages language subjects features createdAt')
+            .sort({ createdAt: -1 })
+            .lean();
+
+        return books.map(book => ({
+            id: book._id.toString(),
+            title: book.title,
+            description: book.description,
+            price: book.price,
+            originalPrice: book.originalPrice,
+            thumbnail: book.thumbnail,
+            author: book.author,
+            pages: book.pages,
+            language: book.language,
+            subjects: book.subjects || [],
+            features: book.features || []
+        }));
+    } catch (error) {
+        console.error('Error fetching books:', error);
+        return [];
     }
-];
+}
 
 export default async function BooksPage() {
     const session = await getServerSession(authOptions);
+    const books = await getBooks();
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -111,7 +64,19 @@ export default async function BooksPage() {
 
             {/* Books Grid */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <BooksGrid books={books} isAuthenticated={!!session} />
+                {books.length > 0 ? (
+                    <BooksGrid books={books} isAuthenticated={!!session} />
+                ) : (
+                    <div className="text-center py-12">
+                        <BookOpen className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                            No books available
+                        </h3>
+                        <p className="text-gray-600">
+                            Check back later for new books.
+                        </p>
+                    </div>
+                )}
             </div>
 
             {/* Features Section */}
