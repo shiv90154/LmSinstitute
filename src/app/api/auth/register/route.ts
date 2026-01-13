@@ -3,6 +3,8 @@ import connectDB from '@/lib/db/mongodb';
 import User from '@/models/User';
 import { generateJWT } from '@/lib/auth/config';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
     const { email, password, name } = await request.json();

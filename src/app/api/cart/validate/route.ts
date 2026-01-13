@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth/config';
 import connectDB from '@/lib/db/mongodb';
 import Course from '@/models/Course';
 
+export const dynamic = 'force-dynamic';
+
 export interface ValidateCartRequest {
   items: Array<{
     id: string;

@@ -5,6 +5,8 @@ import { generateJWT } from '@/lib/auth/jwt-utils';
 import connectDB from '@/lib/db/mongodb';
 import User from '@/models/User';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);

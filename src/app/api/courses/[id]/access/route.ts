@@ -12,6 +12,8 @@ import {
 } from '@/lib/utils/access-control';
 import mongoose from 'mongoose';
 
+export const dynamic = 'force-dynamic';
+
 // GET /api/courses/[id]/access - Check course access and get filtered content
 export async function GET(
   request: NextRequest,

@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth/config';
 import Order from '@/models/Order';
 import connectDB from '@/lib/db/mongodb';
 
+export const dynamic = 'force-dynamic';
+
 export interface PaymentFailureRequest {
   orderId: string;
   razorpayOrderId?: string;
