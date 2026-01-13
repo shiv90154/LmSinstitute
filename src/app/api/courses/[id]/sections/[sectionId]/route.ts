@@ -3,6 +3,8 @@ import connectDB from '@/lib/db/mongodb';
 import Course from '@/models/Course';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
+
+export const dynamic = 'force-dynamic';
 import mongoose from 'mongoose';
 
 // GET /api/courses/[id]/sections/[sectionId] - Get specific section

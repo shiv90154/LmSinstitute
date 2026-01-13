@@ -1,3 +1,7 @@
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+export const revalidate = 0;
+
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
@@ -5,8 +9,6 @@ import connectDB from '@/lib/db/mongodb';
 import User from '@/models/User';
 import Course from '@/models/Course';
 import Order from '@/models/Order';
-
-export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
@@ -21,7 +23,6 @@ export async function GET(request: NextRequest) {
 
     await connectDB();
 
-    // Simple analytics data for production
     const [totalUsers, totalCourses, totalOrders] = await Promise.all([
       User.countDocuments(),
       Course.countDocuments(),
