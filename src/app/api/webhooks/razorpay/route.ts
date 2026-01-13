@@ -7,6 +7,8 @@ import User from '@/models/User';
 import Invoice from '@/models/Invoice';
 import connectDB from '@/lib/db/mongodb';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
     // Get the raw body for signature verification

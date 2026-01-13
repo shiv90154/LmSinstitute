@@ -16,8 +16,20 @@ interface CheckoutFormData {
     address: string;
 }
 
+interface CartItem {
+    id: string;
+    type: 'course' | 'book' | 'material' | 'test';
+    title: string;
+    price: number;
+}
+
+interface Cart {
+    items: CartItem[];
+    totalAmount: number;
+}
+
 export default function CheckoutPage() {
-    const [cart, setCart] = useState<any>(null);
+    const [cart, setCart] = useState<Cart | null>(null);
     const [formData, setFormData] = useState<CheckoutFormData>({
         name: '',
         email: '',
@@ -179,7 +191,7 @@ export default function CheckoutPage() {
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
-                            {cart.items.map((item) => (
+                            {cart.items.map((item: CartItem) => (
                                 <div key={`${item.type}-${item.id}`} className="flex items-center justify-between">
                                     <div className="flex-1">
                                         <h4 className="font-medium">{item.title}</h4>
