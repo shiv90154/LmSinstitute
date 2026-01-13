@@ -1,22 +1,23 @@
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
 export const revalidate = 0;
+export const runtime = "nodejs";
 
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth/config';
-import connectDB from '@/lib/db/mongodb';
-import User from '@/models/User';
-import Course from '@/models/Course';
-import Order from '@/models/Order';
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/config";
+import connectDB from "@/lib/db/mongodb";
+import User from "@/models/User";
+import Course from "@/models/Course";
+import Order from "@/models/Order";
 
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    
-    if (!session || session.user.role !== 'admin') {
+
+    if (!session || session.user.role !== "admin") {
       return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
+        { success: false, error: "Unauthorized" },
         { status: 401 }
       );
     }
@@ -26,10 +27,10 @@ export async function GET(request: NextRequest) {
     const [totalUsers, totalCourses, totalOrders] = await Promise.all([
       User.countDocuments(),
       Course.countDocuments(),
-      Order.countDocuments()
+      Order.countDocuments(),
     ]);
 
-    const analyticsData = {
+    return NextResponse.json({
       overview: {
         totalRevenue: 0,
         revenueGrowth: 0,
@@ -45,13 +46,11 @@ export async function GET(request: NextRequest) {
       paymentMethods: [],
       userRegistrations: [],
       orderStatus: [],
-    };
-
-    return NextResponse.json(analyticsData);
+    });
   } catch (error) {
-    console.error('Analytics error:', error);
+    console.error("Analytics error:", error);
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch analytics data' },
+      { success: false, error: "Failed to fetch analytics data" },
       { status: 500 }
     );
   }
