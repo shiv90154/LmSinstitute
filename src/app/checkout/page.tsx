@@ -17,26 +17,36 @@ interface CheckoutFormData {
 }
 
 export default function CheckoutPage() {
-    const [cart] = useState({
-        items: [
-            { id: '1', type: 'course', title: 'Sample Course', price: 999, thumbnail: '' }
-        ],
-        totalAmount: 999
-    });
+    const [cart, setCart] = useState<any>(null);
     const [formData, setFormData] = useState<CheckoutFormData>({
-        name: 'Test User',
-        email: 'test@example.com',
+        name: '',
+        email: '',
         phone: '',
         address: ''
     });
     const [isProcessing, setIsProcessing] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [isValidating, setIsValidating] = useState(false);
+    const [isValidating, setIsValidating] = useState(true);
 
     useEffect(() => {
-        // Simulate loading
-        setIsValidating(false);
+        fetchCartData();
     }, []);
+
+    const fetchCartData = async () => {
+        try {
+            // Get cart from localStorage or session
+            const cartData = localStorage.getItem('cart');
+            if (cartData) {
+                setCart(JSON.parse(cartData));
+            } else {
+                setCart({ items: [], totalAmount: 0 });
+            }
+        } catch (err) {
+            setError('Failed to load cart data');
+        } finally {
+            setIsValidating(false);
+        }
+    };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -55,7 +65,7 @@ export default function CheckoutPage() {
         setError('Payment functionality will be implemented soon');
     };
 
-    if (isValidating) {
+    if (isValidating || !cart) {
         return (
             <div className="max-w-4xl mx-auto">
                 <div className="flex items-center justify-center min-h-[400px]">

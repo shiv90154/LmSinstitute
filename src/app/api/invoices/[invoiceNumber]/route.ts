@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth/config';
 import Invoice from '@/models/Invoice';
 import connectDB from '@/lib/db/mongodb';
 
+export const dynamic = 'force-dynamic';
+
 interface RouteParams {
   params: {
     invoiceNumber: string;

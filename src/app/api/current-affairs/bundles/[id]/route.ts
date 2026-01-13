@@ -4,6 +4,8 @@ import { CurrentAffairsBundle } from '@/models/CurrentAffairs';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 
+export const dynamic = 'force-dynamic';
+
 // GET /api/current-affairs/bundles/[id] - Get single current affairs bundle
 export async function GET(
   request: NextRequest,

@@ -25,31 +25,33 @@ function PaymentSuccessContent() {
     const searchParams = useSearchParams();
     const orderId = searchParams.get('orderId');
 
-    const [orderDetails] = useState<OrderDetails>({
-        _id: 'sample-order-id',
-        totalAmount: 999,
-        status: 'completed',
-        items: [
-            {
-                title: 'Sample Course',
-                type: 'course',
-                price: 999,
-                itemId: 'sample-course-id'
-            }
-        ],
-        createdAt: new Date().toISOString(),
-        razorpayPaymentId: 'sample-payment-id'
-    });
-    const [loading, setLoading] = useState(false);
+    const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         if (!orderId) {
-            // Redirect to home if no order ID
+            setError('No order ID provided');
+            setLoading(false);
             return;
         }
-        setLoading(false);
+        fetchOrderDetails();
     }, [orderId]);
+
+    const fetchOrderDetails = async () => {
+        try {
+            const response = await fetch(`/api/orders/${orderId}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch order details');
+            }
+            const data = await response.json();
+            setOrderDetails(data);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to load order details');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleDownloadInvoice = async () => {
         // Download invoice functionality will be implemented
