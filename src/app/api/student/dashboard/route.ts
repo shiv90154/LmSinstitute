@@ -5,7 +5,7 @@ import connectDB from '@/lib/db/mongodb';
 import User from '@/models/User';
 import Order from '@/models/Order';
 import Course from '@/models/Course';
-import { MockTest, TestAttempt } from '@/models/MockTest';
+import MockTest, { TestAttempt } from '@/models/MockTest';
 import CourseProgress from '@/models/Progress';
 import {
   createSuccessResponse,
