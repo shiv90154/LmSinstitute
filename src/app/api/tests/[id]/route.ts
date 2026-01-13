@@ -4,6 +4,8 @@ import MockTest from '@/models/MockTest';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 
+export const dynamic = 'force-dynamic';
+
 // GET /api/tests/[id] - Get specific mock test
 export async function GET(
   request: NextRequest,

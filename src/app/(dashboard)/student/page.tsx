@@ -89,22 +89,7 @@ export default function StudentDashboard() {
     };
 
     useEffect(() => {
-        // Simulate loading for now
-        setTimeout(() => {
-            setDashboardData({
-                courses: [],
-                books: [],
-                studyMaterials: [],
-                testHistory: [],
-                paymentHistory: [],
-                profile: {
-                    name: 'Student User',
-                    email: 'student@example.com',
-                    joinedAt: new Date().toISOString()
-                }
-            });
-            setLoading(false);
-        }, 1000);
+        fetchDashboardData();
     }, []);
 
     const fetchDashboardData = async () => {

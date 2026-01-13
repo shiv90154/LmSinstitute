@@ -8,6 +8,8 @@ import User from '@/models/User';
 import Invoice from '@/models/Invoice';
 import connectDB from '@/lib/db/mongodb';
 
+export const dynamic = 'force-dynamic';
+
 export interface VerifyPaymentRequest {
   razorpay_order_id: string;
   razorpay_payment_id: string;

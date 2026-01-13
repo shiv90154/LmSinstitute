@@ -5,6 +5,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 import { calculateTestScore, validateTestTiming, generatePerformanceAnalytics } from '@/lib/utils/test-scoring';
 
+export const dynamic = 'force-dynamic';
+
 // Utility function to shuffle array (Fisher-Yates algorithm)
 function shuffleArray<T>(array: T[]): T[] {
   const shuffled = [...array];

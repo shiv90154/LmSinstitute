@@ -4,6 +4,8 @@ import { TestAttempt } from '@/models/MockTest';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 
+export const dynamic = 'force-dynamic';
+
 // GET /api/tests/[id]/results - Get test results and rankings
 export async function GET(
   request: NextRequest,

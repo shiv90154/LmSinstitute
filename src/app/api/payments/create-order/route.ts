@@ -5,6 +5,8 @@ import { createRazorpayOrder } from '@/lib/payments/razorpay';
 import Order from '@/models/Order';
 import connectDB from '@/lib/db/mongodb';
 
+export const dynamic = 'force-dynamic';
+
 export interface CreateOrderRequest {
   items: Array<{
     type: 'course' | 'book' | 'material' | 'test';

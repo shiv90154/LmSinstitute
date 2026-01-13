@@ -3,6 +3,8 @@ import connectDB from '@/lib/db/mongodb';
 import { TestAttempt } from '@/models/MockTest';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
+
+export const dynamic = 'force-dynamic';
 import { calculatePercentile } from '@/lib/utils/test-scoring';
 
 // GET /api/tests/[id]/analytics - Get comprehensive test analytics

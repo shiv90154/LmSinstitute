@@ -4,6 +4,8 @@ import StudyMaterial from '@/models/StudyMaterial';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
 
+export const dynamic = 'force-dynamic';
+
 // GET /api/study-materials/[id] - Get single study material
 export async function GET(
   request: NextRequest,

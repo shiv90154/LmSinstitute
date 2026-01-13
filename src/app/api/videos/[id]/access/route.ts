@@ -7,6 +7,8 @@ import { authOptions } from '@/lib/auth/config';
 import { checkVideoAccess, generateSecureEmbedUrl, obfuscateVideoSource } from '@/lib/utils/video-protection';
 import mongoose from 'mongoose';
 
+export const dynamic = 'force-dynamic';
+
 // GET /api/videos/[id]/access - Check video access and get secure URL
 export async function GET(
   request: NextRequest,

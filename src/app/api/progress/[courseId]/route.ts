@@ -4,6 +4,8 @@ import CourseProgress from '@/models/Progress';
 import Course from '@/models/Course';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/config';
+
+export const dynamic = 'force-dynamic';
 import { 
   initializeCourseProgress,
   generateProgressSummary,
