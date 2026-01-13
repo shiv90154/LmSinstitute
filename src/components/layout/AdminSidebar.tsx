@@ -8,7 +8,6 @@ import {
     Users,
     ShoppingCart,
     FileText,
-    BarChart3,
     Settings,
     TestTube,
     Home,
@@ -24,7 +23,6 @@ const navigation = [
     { name: 'Users', href: '/admin/users', icon: Users },
     { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
     { name: 'Blog Posts', href: '/admin/blog', icon: FileText },
-    { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
     { name: 'Settings', href: '/admin/settings', icon: Settings },
 ];
 

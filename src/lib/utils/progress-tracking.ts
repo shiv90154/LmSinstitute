@@ -376,7 +376,7 @@ export function generateProgressSummary(
 }
 
 /**
- * Calculates learning analytics
+ * Calculates learning metrics
  */
 export function calculateLearningAnalytics(progress: ICourseProgress): {
   averageSessionTime: number;

@@ -99,7 +99,7 @@ export async function GET(
     // Obfuscate source information
     const { displayId } = obfuscateVideoSource(targetVideo.youtubeId);
 
-    // Video access granted - log for analytics if needed
+    // Video access granted - log for monitoring if needed
 
     return NextResponse.json({
       success: true,
@@ -220,7 +220,7 @@ export async function POST(
       ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip')
     };
 
-    // Video interaction logged for analytics
+    // Video interaction logged for monitoring
 
     // In a production app, you would save this to a VideoInteraction model
     // await VideoInteraction.create(interactionLog);

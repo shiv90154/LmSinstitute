@@ -221,10 +221,10 @@ export const reportWebVitals = (metric: any) => {
   const monitor = PerformanceMonitor.getInstance();
   monitor.recordMetric(`web_vital_${metric.name}`, metric.value);
   
-  // Send to analytics in production
+  // Send to monitoring service in production
   if (process.env.NODE_ENV === 'production') {
-    // Send to analytics service in production
-    // Example: analytics.track('web-vital', metric);
+    // Send to monitoring service in production
+    // Example: monitoring.track('web-vital', metric);
   }
 };
 

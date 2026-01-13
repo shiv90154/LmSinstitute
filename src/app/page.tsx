@@ -64,7 +64,7 @@ export default function Home() {
                   Mock Tests
                 </h3>
                 <p className="text-gray-600 text-center mb-4">
-                  Practice with timed tests, performance analytics, and detailed solutions
+                  Practice with timed tests, performance tracking, and detailed solutions
                 </p>
                 <p className="text-sm text-green-600 text-center font-medium">
                   Simulate real exam conditions with our advanced testing system →
